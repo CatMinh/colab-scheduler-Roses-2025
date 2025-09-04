@@ -1,1 +1,23 @@
+on:
+  schedule:
+    - cron: "0 1 1 * *"   # 00:00 Asia/Ho_Chi_Minh = 17:00 UTC
+  workflow_dispatch:
 
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install papermill jupyter gspread oauth2client
+
+      - name: Execute notebook
+        env:
+          SERVICE_ACCOUNT_JSON: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+        run: |
+          papermill "[Jobsgo]_[Pipeline_Roses_2025].ipynb" /dev/null
